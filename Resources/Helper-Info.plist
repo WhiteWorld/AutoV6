@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>com.autov6.AutoV6Helper</string>
+    <key>CFBundleName</key>
+    <string>AutoV6Helper</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>SMAuthorizedClients</key>
+    <array>
+        <!-- The value must match the code signing requirement of the main app.
+             Update this to match your actual signing identity. -->
+        <string>identifier "com.autov6.AutoV6" and anchor apple generic</string>
+    </array>
+</dict>
+</plist>

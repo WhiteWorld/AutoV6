@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>AutoV6 需要位置服务权限以读取当前 Wi-Fi 名称（SSID），用于自动切换 IPv6 配置。</string>
+    <key>SMPrivilegedExecutables</key>
+    <dict>
+        <!-- Key = Helper bundle ID, Value = code signing requirement of the Helper.
+             Update to match your actual signing identity. -->
+        <key>com.autov6.AutoV6Helper</key>
+        <string>identifier "com.autov6.AutoV6Helper" and anchor apple generic</string>
+    </dict>
+</dict>
+</plist>
