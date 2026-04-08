@@ -1,0 +1,467 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA060001000000000000001 /* AutoV6App.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040001000000000000001 /* AutoV6App.swift */; };
+		AA060002000000000000001 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040002000000000000001 /* MenuBarView.swift */; };
+		AA060003000000000000001 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040003000000000000001 /* Models.swift */; };
+		AA060004000000000000001 /* RuleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040004000000000000001 /* RuleStore.swift */; };
+		AA060005000000000000001 /* WiFiMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040005000000000000001 /* WiFiMonitor.swift */; };
+		AA060006000000000000001 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040006000000000000001 /* LocationManager.swift */; };
+		AA060009000000000000001 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040009000000000000001 /* OnboardingView.swift */; };
+		AA060014000000000000001 /* RuleStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040014000000000000001 /* RuleStoreTests.swift */; };
+		AA060015000000000000001 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040003000000000000001 /* Models.swift */; };
+		AA060016000000000000001 /* RuleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040004000000000000001 /* RuleStore.swift */; };
+		AA060019000000000000001 /* AutoV6/IPv6Applier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA040015000000000000001 /* AutoV6/IPv6Applier.swift */; };
+		AA060020000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA040020000000000000001 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AA030001000000000000001 /* AutoV6.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoV6.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA030003000000000000001 /* AutoV6Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoV6Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA040001000000000000001 /* AutoV6App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoV6App.swift; sourceTree = "<group>"; };
+		AA040002000000000000001 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		AA040003000000000000001 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		AA040004000000000000001 /* RuleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleStore.swift; sourceTree = "<group>"; };
+		AA040005000000000000001 /* WiFiMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiMonitor.swift; sourceTree = "<group>"; };
+		AA040006000000000000001 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		AA040009000000000000001 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		AA040013000000000000001 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		AA040013000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA040014000000000000001 /* RuleStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleStoreTests.swift; sourceTree = "<group>"; };
+		AA040015000000000000001 /* AutoV6/IPv6Applier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoV6/IPv6Applier.swift; sourceTree = SOURCE_ROOT; };
+		AA040020000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AA070002000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA070007000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B1BD9682F855553005E2138 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				AA040015000000000000001 /* AutoV6/IPv6Applier.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		AA010001000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				AA010002000000000000001 /* AutoV6 */,
+				AA010005000000000000001 /* Resources */,
+				AA010006000000000000001 /* AutoV6Tests */,
+				AA010007000000000000001 /* Products */,
+				2B1BD9682F855553005E2138 /* Recovered References */,
+			);
+			sourceTree = "<group>";
+		};
+		AA010002000000000000001 /* AutoV6 */ = {
+			isa = PBXGroup;
+			children = (
+				AA040001000000000000001 /* AutoV6App.swift */,
+				AA040002000000000000001 /* MenuBarView.swift */,
+				AA040003000000000000001 /* Models.swift */,
+				AA040004000000000000001 /* RuleStore.swift */,
+				AA040005000000000000001 /* WiFiMonitor.swift */,
+				AA040006000000000000001 /* LocationManager.swift */,
+				AA040009000000000000001 /* OnboardingView.swift */,
+				AA040020000000000000001 /* Assets.xcassets */,
+				AA040013000000000000005 /* Info.plist */,
+			);
+			path = AutoV6;
+			sourceTree = "<group>";
+		};
+		AA010005000000000000001 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AA040013000000000000001 /* App.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AA010006000000000000001 /* AutoV6Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AA040014000000000000001 /* RuleStoreTests.swift */,
+			);
+			path = AutoV6Tests;
+			sourceTree = "<group>";
+		};
+		AA010007000000000000001 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA030001000000000000001 /* AutoV6.app */,
+				AA030003000000000000001 /* AutoV6Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AA020001000000000000001 /* AutoV6 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA090002000000000000001 /* Build configuration list for PBXNativeTarget "AutoV6" */;
+			buildPhases = (
+				AA070001000000000000001 /* Sources */,
+				AA070002000000000000001 /* Frameworks */,
+				AA070003000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AutoV6;
+			productName = AutoV6;
+			productReference = AA030001000000000000001 /* AutoV6.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AA020003000000000000001 /* AutoV6Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA090004000000000000001 /* Build configuration list for PBXNativeTarget "AutoV6Tests" */;
+			buildPhases = (
+				AA070008000000000000001 /* Sources */,
+				AA070007000000000000001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AutoV6Tests;
+			productName = AutoV6Tests;
+			productReference = AA030003000000000000001 /* AutoV6Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AA000001000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 2640;
+				TargetAttributes = {
+					AA020001000000000000001 = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					AA020003000000000000001 = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = AA020001000000000000001;
+					};
+				};
+			};
+			buildConfigurationList = AA090001000000000000001 /* Build configuration list for PBXProject "AutoV6" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				"zh-Hans",
+				Base,
+			);
+			mainGroup = AA010001000000000000001;
+			productRefGroup = AA010007000000000000001 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AA020001000000000000001 /* AutoV6 */,
+				AA020003000000000000001 /* AutoV6Tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AA070003000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA060020000000000000001 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA070001000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA060001000000000000001 /* AutoV6App.swift in Sources */,
+				AA060002000000000000001 /* MenuBarView.swift in Sources */,
+				AA060003000000000000001 /* Models.swift in Sources */,
+				AA060004000000000000001 /* RuleStore.swift in Sources */,
+				AA060005000000000000001 /* WiFiMonitor.swift in Sources */,
+				AA060006000000000000001 /* LocationManager.swift in Sources */,
+				AA060009000000000000001 /* OnboardingView.swift in Sources */,
+				AA060019000000000000001 /* AutoV6/IPv6Applier.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA070008000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA060014000000000000001 /* RuleStoreTests.swift in Sources */,
+				AA060015000000000000001 /* Models.swift in Sources */,
+				AA060016000000000000001 /* RuleStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AA080001000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AA080002000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		AA080003000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Resources/App.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 59C67Y8RM3;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = AutoV6/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.autov6.AutoV6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AA080004000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Resources/App.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 59C67Y8RM3;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = AutoV6/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.autov6.AutoV6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AA080007000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 59C67Y8RM3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.autov6.AutoV6Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AutoV6.app/Contents/MacOS/AutoV6";
+			};
+			name = Debug;
+		};
+		AA080008000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 59C67Y8RM3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.autov6.AutoV6Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AutoV6.app/Contents/MacOS/AutoV6";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AA090001000000000000001 /* Build configuration list for PBXProject "AutoV6" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA080001000000000000001 /* Debug */,
+				AA080002000000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA090002000000000000001 /* Build configuration list for PBXNativeTarget "AutoV6" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA080003000000000000001 /* Debug */,
+				AA080004000000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA090004000000000000001 /* Build configuration list for PBXNativeTarget "AutoV6Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA080007000000000000001 /* Debug */,
+				AA080008000000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AA000001000000000000001 /* Project object */;
+}
