@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import Security
 import SystemConfiguration
@@ -101,6 +102,15 @@ enum IPv6Applier {
             sharedAuth = nil
         }
 
+        // We're about to show the SecurityAgent (Touch ID / password)
+        // dialog. That dialog is attached to our process — for a menu
+        // bar app that's not frontmost it either stays hidden behind
+        // other windows or fails to appear at all, surfacing to the
+        // user as "authorization canceled or failed". Bring the app
+        // to the front before prompting so the dialog is reliably
+        // visible and dismissable.
+        activateAppForPrompt()
+
         // Create a fresh auth and prompt once (Touch ID or password)
         var authRef: AuthorizationRef?
         guard AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess,
@@ -108,13 +118,28 @@ enum IPv6Applier {
 
         var item = AuthorizationItem(name: kAuthorizationRightExecute, valueLength: 0, value: nil, flags: 0)
         var rights = AuthorizationRights(count: 1, items: &item)
-        guard AuthorizationCopyRights(auth, &rights, nil, [.interactionAllowed, .extendRights], nil) == errAuthorizationSuccess else {
+        let status = AuthorizationCopyRights(auth, &rights, nil, [.interactionAllowed, .extendRights], nil)
+        guard status == errAuthorizationSuccess else {
+            print("[IPv6Applier] AuthorizationCopyRights failed with status \(status)")
             AuthorizationFree(auth, [])
             return nil
         }
 
         sharedAuth = auth
         return auth
+    }
+
+    /// Brings AutoV6 to the foreground so SecurityAgent's prompt is
+    /// visible. Safe to call from any thread.
+    private static func activateAppForPrompt() {
+        let activate = {
+            NSApp.activate(ignoringOtherApps: true)
+        }
+        if Thread.isMainThread {
+            activate()
+        } else {
+            DispatchQueue.main.sync(execute: activate)
+        }
     }
 
     /// Runs a tool with administrator privileges. Returns nil on success, error string on failure.
