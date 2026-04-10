@@ -35,7 +35,7 @@ final class LocationManager: NSObject {
         switch manager.authorizationStatus {
         case .denied, .restricted:
             openSystemSettings()
-        case .authorizedWhenInUse, .authorizedAlways:
+        case .authorizedAlways:
             manager.startUpdatingLocation()
         default:
             manager.requestWhenInUseAuthorization()
@@ -54,7 +54,7 @@ final class LocationManager: NSObject {
     }
 
     var isAuthorized: Bool {
-        authorizationStatus == .authorizedWhenInUse || authorizationStatus == .authorizedAlways
+        authorizationStatus == .authorizedAlways
     }
 }
 
@@ -63,7 +63,7 @@ extension LocationManager: CLLocationManagerDelegate {
         authorizationStatus = manager.authorizationStatus
         print("[LocationManager] Authorization changed: \(statusDescription(authorizationStatus))")
         switch authorizationStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
+        case .authorizedAlways:
             // Keep updates running so TCC continues to observe an active
             // consumer. Stopping here is what was causing System Settings
             // to revert the toggle to OFF shortly after enabling it.
@@ -94,8 +94,6 @@ private extension LocationManager {
             return "denied"
         case .authorizedAlways:
             return "authorizedAlways"
-        case .authorizedWhenInUse:
-            return "authorizedWhenInUse"
         @unknown default:
             return "unknown"
         }
