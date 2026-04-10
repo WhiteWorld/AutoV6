@@ -7,9 +7,9 @@
     <key>CFBundleName</key>
     <string>$(PRODUCT_NAME)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>1.0.1</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>2</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>AutoV6 需要位置服务权限以读取当前 Wi-Fi 名称（SSID），用于自动切换 IPv6 配置。</string>
 </dict>
