@@ -1,5 +1,6 @@
 import AppKit
 import Foundation
+import LocalAuthentication
 import Security
 import SystemConfiguration
 
@@ -102,16 +103,36 @@ enum IPv6Applier {
             sharedAuth = nil
         }
 
-        // We're about to show the SecurityAgent (Touch ID / password)
-        // dialog. That dialog is attached to our process — for a menu
-        // bar app that's not frontmost it either stays hidden behind
-        // other windows or fails to appear at all, surfacing to the
-        // user as "authorization canceled or failed". Bring the app
-        // to the front before prompting so the dialog is reliably
-        // visible and dismissable.
+        // Try Touch ID / biometrics first. The LA dialog is shown by a
+        // system process, so we don't need to bring our app to the front.
+        if tryBiometricAuth() {
+            // Biometric succeeded — attempt silent privilege grant.
+            // On some macOS versions the Security framework recognises the
+            // recent LA session and grants the right without a second dialog.
+            var authRef: AuthorizationRef?
+            if AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess,
+               let auth = authRef {
+                var item = AuthorizationItem(name: kAuthorizationRightExecute, valueLength: 0, value: nil, flags: 0)
+                var rights = AuthorizationRights(count: 1, items: &item)
+                if AuthorizationCopyRights(auth, &rights, nil, [.extendRights], nil) == errAuthorizationSuccess {
+                    sharedAuth = auth
+                    return auth
+                }
+                AuthorizationFree(auth, [])
+            }
+            // Silent grant failed — fall through to the SecurityAgent dialog.
+            // The user already authenticated with Touch ID, so we don't ask
+            // again via LA; SecurityAgent will handle the remaining privilege
+            // elevation (may re-prompt if the auth database requires it).
+        }
+
+        // We're about to show the SecurityAgent (password / Touch ID) dialog.
+        // That dialog is attached to our process — for a menu bar app that's
+        // not frontmost it either stays hidden behind other windows or fails
+        // to appear at all. Bring the app to the front first.
         activateAppForPrompt()
 
-        // Create a fresh auth and prompt once (Touch ID or password)
+        // Create a fresh auth and prompt (SecurityAgent handles Touch ID or password)
         var authRef: AuthorizationRef?
         guard AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess,
               let auth = authRef else { return nil }
@@ -127,6 +148,37 @@ enum IPv6Applier {
 
         sharedAuth = auth
         return auth
+    }
+
+    /// Attempts Touch ID / biometric authentication synchronously.
+    /// Returns true if the user authenticated successfully, false if biometrics
+    /// are unavailable on this device or the user cancelled / failed.
+    ///
+    /// Called from a background thread (Task.detached); uses a semaphore to
+    /// bridge the async LA completion back to a synchronous return value.
+    private static func tryBiometricAuth() -> Bool {
+        let context = LAContext()
+        // Hide the "Use Password…" fallback button — password auth is handled
+        // by the SecurityAgent dialog that follows if biometrics fail.
+        context.localizedFallbackTitle = ""
+        var nsError: NSError?
+        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &nsError) else {
+            print("[IPv6Applier] Biometrics unavailable: \(nsError?.localizedDescription ?? "unknown")")
+            return false
+        }
+
+        let semaphore = DispatchSemaphore(value: 0)
+        var authenticated = false
+        context.evaluatePolicy(
+            .deviceOwnerAuthenticationWithBiometrics,
+            localizedReason: "修改网络 IPv6 设置"
+        ) { success, error in
+            authenticated = success
+            if let error { print("[IPv6Applier] Biometric auth error: \(error.localizedDescription)") }
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return authenticated
     }
 
     /// Brings AutoV6 to the foreground so SecurityAgent's prompt is
