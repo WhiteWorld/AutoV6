@@ -29,23 +29,38 @@ final class LocationManager: NSObject {
 
     func requestPermission() {
         print("[LocationManager] Requesting permission, current status: \(statusDescription(manager.authorizationStatus))")
-        // Menu bar apps are often inactive when the popover is shown.
-        // Bring the app to the foreground before asking Core Location.
-        NSApp.activate(ignoringOtherApps: true)
         switch manager.authorizationStatus {
         case .denied, .restricted:
             openSystemSettings()
         case .authorizedAlways:
             manager.startUpdatingLocation()
         default:
-            manager.requestWhenInUseAuthorization()
+            // On macOS, TCC dialogs need a focused NSWindow context to appear.
+            // MenuBarExtra popovers are not recognized as foreground windows by TCC,
+            // so we create a minimal transparent panel to give the system a valid anchor.
+            showPermissionWindow()
+            manager.requestAlwaysAuthorization()
         }
-        // Always (re)start updates. macOS uses the presence of an active
-        // location consumer as the signal that the permission is actually
-        // in use; without it the toggle in System Settings auto-reverts
-        // to OFF a few seconds after the user enables it.
-        manager.startUpdatingLocation()
     }
+
+    private func showPermissionWindow() {
+        guard permissionPanel == nil else { return }
+        let panel = NSPanel(
+            contentRect: NSRect(x: 0, y: 0, width: 1, height: 1),
+            styleMask: [.borderless],
+            backing: .buffered,
+            defer: false
+        )
+        panel.backgroundColor = .clear
+        panel.isOpaque = false
+        panel.level = .floating
+        panel.center()
+        panel.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        permissionPanel = panel
+    }
+
+    private var permissionPanel: NSPanel?
 
     func openSystemSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices") {
@@ -62,11 +77,10 @@ extension LocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         authorizationStatus = manager.authorizationStatus
         print("[LocationManager] Authorization changed: \(statusDescription(authorizationStatus))")
+        permissionPanel?.close()
+        permissionPanel = nil
         switch authorizationStatus {
         case .authorizedAlways:
-            // Keep updates running so TCC continues to observe an active
-            // consumer. Stopping here is what was causing System Settings
-            // to revert the toggle to OFF shortly after enabling it.
             manager.startUpdatingLocation()
         case .denied, .restricted:
             manager.stopUpdatingLocation()

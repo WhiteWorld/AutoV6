@@ -29,13 +29,19 @@ struct OnboardingView: View {
                     Text("位置服务权限").font(.subheadline.bold())
                     Text("读取 Wi-Fi 名称（SSID）所需")
                         .font(.caption).foregroundStyle(.secondary)
-                    if !locationManager.isAuthorized {
-                        HStack(spacing: 8) {
-                            Button("授权") { locationManager.requestPermission() }
-                                .controlSize(.small)
-                            Button("系统设置") { locationManager.openSystemSettings() }
+                    switch locationManager.authorizationStatus {
+                    case .notDetermined:
+                        Button("授权") { locationManager.requestPermission() }
+                            .controlSize(.small)
+                    case .denied, .restricted:
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("已被拒绝，请在系统设置中手动开启")
+                                .font(.caption).foregroundStyle(.red)
+                            Button("打开系统设置") { locationManager.openSystemSettings() }
                                 .controlSize(.small)
                         }
+                    default:
+                        EmptyView()
                     }
                 }
                 Spacer()
