@@ -35,9 +35,7 @@ final class LocationManager: NSObject {
         case .authorizedAlways:
             manager.startUpdatingLocation()
         default:
-            // On macOS, TCC dialogs need a focused NSWindow context to appear.
-            // MenuBarExtra popovers are not recognized as foreground windows by TCC,
-            // so we create a minimal transparent panel to give the system a valid anchor.
+            guard permissionPanel == nil else { return }
             showPermissionWindow()
             manager.requestAlwaysAuthorization()
         }
@@ -45,22 +43,22 @@ final class LocationManager: NSObject {
 
     private func showPermissionWindow() {
         guard permissionPanel == nil else { return }
-        let panel = NSPanel(
+        let win = KeyableWindow(
             contentRect: NSRect(x: 0, y: 0, width: 1, height: 1),
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
         )
-        panel.backgroundColor = .clear
-        panel.isOpaque = false
-        panel.level = .floating
-        panel.center()
-        panel.makeKeyAndOrderFront(nil)
+        win.backgroundColor = .clear
+        win.isOpaque = false
+        win.level = .floating
+        win.center()
+        win.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
-        permissionPanel = panel
+        permissionPanel = win
     }
 
-    private var permissionPanel: NSPanel?
+    private var permissionPanel: NSWindow?
 
     func openSystemSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices") {
@@ -71,6 +69,13 @@ final class LocationManager: NSObject {
     var isAuthorized: Bool {
         authorizationStatus == .authorizedAlways
     }
+}
+
+// NSWindow subclass that allows borderless windows to become key,
+// which is required for macOS TCC to attach the permission dialog.
+private final class KeyableWindow: NSWindow {
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
 }
 
 extension LocationManager: CLLocationManagerDelegate {

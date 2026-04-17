@@ -1,6 +1,5 @@
 import AppKit
 import Foundation
-import LocalAuthentication
 import Security
 import SystemConfiguration
 
@@ -90,49 +89,24 @@ enum IPv6Applier {
     private nonisolated(unsafe) static var sharedAuth: AuthorizationRef?
 
     /// Returns a valid AuthorizationRef, prompting the user only when necessary.
+    /// Uses SecurityAgent exclusively — it shows Touch ID on systems that have
+    /// "Use Touch ID to unlock settings and apps" enabled in System Settings,
+    /// and falls back to password entry otherwise. A single dialog, no double-prompt.
     private static func acquireAuth() -> AuthorizationRef? {
-        // Try to extend the existing auth without prompting
         if let auth = sharedAuth {
             var item = AuthorizationItem(name: kAuthorizationRightExecute, valueLength: 0, value: nil, flags: 0)
             var rights = AuthorizationRights(count: 1, items: &item)
             if AuthorizationCopyRights(auth, &rights, nil, [.extendRights], nil) == errAuthorizationSuccess {
                 return auth
             }
-            // Expired — free and fall through to create a new one
             AuthorizationFree(auth, [])
             sharedAuth = nil
         }
 
-        // Try Touch ID / biometrics first. The LA dialog is shown by a
-        // system process, so we don't need to bring our app to the front.
-        if tryBiometricAuth() {
-            // Biometric succeeded — attempt silent privilege grant.
-            // On some macOS versions the Security framework recognises the
-            // recent LA session and grants the right without a second dialog.
-            var authRef: AuthorizationRef?
-            if AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess,
-               let auth = authRef {
-                var item = AuthorizationItem(name: kAuthorizationRightExecute, valueLength: 0, value: nil, flags: 0)
-                var rights = AuthorizationRights(count: 1, items: &item)
-                if AuthorizationCopyRights(auth, &rights, nil, [.extendRights], nil) == errAuthorizationSuccess {
-                    sharedAuth = auth
-                    return auth
-                }
-                AuthorizationFree(auth, [])
-            }
-            // Silent grant failed — fall through to the SecurityAgent dialog.
-            // The user already authenticated with Touch ID, so we don't ask
-            // again via LA; SecurityAgent will handle the remaining privilege
-            // elevation (may re-prompt if the auth database requires it).
-        }
-
-        // We're about to show the SecurityAgent (password / Touch ID) dialog.
-        // That dialog is attached to our process — for a menu bar app that's
-        // not frontmost it either stays hidden behind other windows or fails
-        // to appear at all. Bring the app to the front first.
+        // SecurityAgent is attached to our process; make sure the app is
+        // frontmost so the prompt isn't hidden behind other windows.
         activateAppForPrompt()
 
-        // Create a fresh auth and prompt (SecurityAgent handles Touch ID or password)
         var authRef: AuthorizationRef?
         guard AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess,
               let auth = authRef else { return nil }
@@ -141,57 +115,18 @@ enum IPv6Applier {
         var rights = AuthorizationRights(count: 1, items: &item)
         let status = AuthorizationCopyRights(auth, &rights, nil, [.interactionAllowed, .extendRights], nil)
         guard status == errAuthorizationSuccess else {
-            print("[IPv6Applier] AuthorizationCopyRights failed with status \(status)")
+            print("[IPv6Applier] AuthorizationCopyRights failed: \(status)")
             AuthorizationFree(auth, [])
             return nil
         }
-
         sharedAuth = auth
         return auth
     }
 
-    /// Attempts Touch ID / biometric authentication synchronously.
-    /// Returns true if the user authenticated successfully, false if biometrics
-    /// are unavailable on this device or the user cancelled / failed.
-    ///
-    /// Called from a background thread (Task.detached); uses a semaphore to
-    /// bridge the async LA completion back to a synchronous return value.
-    private static func tryBiometricAuth() -> Bool {
-        let context = LAContext()
-        // Hide the "Use Password…" fallback button — password auth is handled
-        // by the SecurityAgent dialog that follows if biometrics fail.
-        context.localizedFallbackTitle = ""
-        var nsError: NSError?
-        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &nsError) else {
-            print("[IPv6Applier] Biometrics unavailable: \(nsError?.localizedDescription ?? "unknown")")
-            return false
-        }
-
-        let semaphore = DispatchSemaphore(value: 0)
-        var authenticated = false
-        context.evaluatePolicy(
-            .deviceOwnerAuthenticationWithBiometrics,
-            localizedReason: "修改网络 IPv6 设置"
-        ) { success, error in
-            authenticated = success
-            if let error { print("[IPv6Applier] Biometric auth error: \(error.localizedDescription)") }
-            semaphore.signal()
-        }
-        semaphore.wait()
-        return authenticated
-    }
-
-    /// Brings AutoV6 to the foreground so SecurityAgent's prompt is
-    /// visible. Safe to call from any thread.
+    /// Brings AutoV6 to the foreground so SecurityAgent's prompt is visible.
     private static func activateAppForPrompt() {
-        let activate = {
-            NSApp.activate(ignoringOtherApps: true)
-        }
-        if Thread.isMainThread {
-            activate()
-        } else {
-            DispatchQueue.main.sync(execute: activate)
-        }
+        let activate = { NSApp.activate(ignoringOtherApps: true) }
+        if Thread.isMainThread { activate() } else { DispatchQueue.main.sync(execute: activate) }
     }
 
     /// Runs a tool with administrator privileges. Returns nil on success, error string on failure.
