@@ -14,10 +14,17 @@ struct AutoV6App: App {
 
         wifiMonitor.onModeChange = { [weak wifiMonitor] mode, iface in
             Task.detached {
-                let error = IPv6Applier.apply(mode, interface: iface)
+                let result = IPv6Applier.apply(mode, interface: iface)
                 await MainActor.run {
-                    if error == nil { wifiMonitor?.notifyModeApplied(mode) }
-                    wifiMonitor?.lastError = error
+                    switch result {
+                    case .success:
+                        wifiMonitor?.notifyModeApplied(mode)
+                        wifiMonitor?.lastError = nil
+                    case .cancelled:
+                        wifiMonitor?.lastError = nil
+                    case .failure(let msg):
+                        wifiMonitor?.lastError = msg
+                    }
                 }
             }
         }

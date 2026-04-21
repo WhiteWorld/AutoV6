@@ -5,14 +5,19 @@ import SystemConfiguration
 
 enum IPv6Applier {
 
+    enum ApplyResult {
+        case success
+        case cancelled
+        case failure(String)
+    }
+
     // MARK: - Public
 
     /// Apply an IPv6 mode to the given BSD interface name (e.g. "en0").
-    /// Returns nil on success, or an error description string on failure.
     @discardableResult
-    static func apply(_ mode: IPv6Mode, interface ifName: String) -> String? {
+    static func apply(_ mode: IPv6Mode, interface ifName: String) -> ApplyResult {
         guard let serviceName = self.serviceName(forInterface: ifName) else {
-            return "无法找到接口 \(ifName) 对应的网络服务"
+            return .failure("无法找到接口 \(ifName) 对应的网络服务")
         }
 
         let args: [String]
@@ -23,7 +28,7 @@ enum IPv6Applier {
             args = ["-setv6linklocal", serviceName]
         case .manual:
             guard let cfg = currentIPv6Config(interfaceName: ifName) else {
-                return "当前网络没有可用的 IPv6 地址，无法应用手动模式"
+                return .failure("当前网络没有可用的 IPv6 地址，无法应用手动模式")
             }
             args = ["-setv6manual", serviceName, cfg.address, String(cfg.prefixLength), cfg.router]
         }
@@ -88,16 +93,22 @@ enum IPv6Applier {
     // macOS revokes it after ~5 min of inactivity; we recreate it then.
     private nonisolated(unsafe) static var sharedAuth: AuthorizationRef?
 
+    enum AuthAcquireResult {
+        case success(AuthorizationRef)
+        case cancelled
+        case failed(OSStatus)
+    }
+
     /// Returns a valid AuthorizationRef, prompting the user only when necessary.
     /// Uses SecurityAgent exclusively — it shows Touch ID on systems that have
     /// "Use Touch ID to unlock settings and apps" enabled in System Settings,
     /// and falls back to password entry otherwise. A single dialog, no double-prompt.
-    private static func acquireAuth() -> AuthorizationRef? {
+    private static func acquireAuth() -> AuthAcquireResult {
         if let auth = sharedAuth {
             var item = AuthorizationItem(name: kAuthorizationRightExecute, valueLength: 0, value: nil, flags: 0)
             var rights = AuthorizationRights(count: 1, items: &item)
             if AuthorizationCopyRights(auth, &rights, nil, [.extendRights], nil) == errAuthorizationSuccess {
-                return auth
+                return .success(auth)
             }
             AuthorizationFree(auth, [])
             sharedAuth = nil
@@ -108,8 +119,10 @@ enum IPv6Applier {
         activateAppForPrompt()
 
         var authRef: AuthorizationRef?
-        guard AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess,
-              let auth = authRef else { return nil }
+        let createStatus = AuthorizationCreate(nil, nil, [], &authRef)
+        guard createStatus == errAuthorizationSuccess, let auth = authRef else {
+            return .failed(createStatus)
+        }
 
         var item = AuthorizationItem(name: kAuthorizationRightExecute, valueLength: 0, value: nil, flags: 0)
         var rights = AuthorizationRights(count: 1, items: &item)
@@ -117,10 +130,10 @@ enum IPv6Applier {
         guard status == errAuthorizationSuccess else {
             print("[IPv6Applier] AuthorizationCopyRights failed: \(status)")
             AuthorizationFree(auth, [])
-            return nil
+            return status == errAuthorizationCanceled ? .cancelled : .failed(status)
         }
         sharedAuth = auth
-        return auth
+        return .success(auth)
     }
 
     /// Brings AutoV6 to the foreground so SecurityAgent's prompt is visible.
@@ -129,11 +142,17 @@ enum IPv6Applier {
         if Thread.isMainThread { activate() } else { DispatchQueue.main.sync(execute: activate) }
     }
 
-    /// Runs a tool with administrator privileges. Returns nil on success, error string on failure.
+    /// Runs a tool with administrator privileges.
     @discardableResult
-    private static func runPrivileged(tool: String, arguments: [String]) -> String? {
-        guard let auth = acquireAuth() else {
-            return "授权被取消或失败"
+    private static func runPrivileged(tool: String, arguments: [String]) -> ApplyResult {
+        let auth: AuthorizationRef
+        switch acquireAuth() {
+        case .success(let a):
+            auth = a
+        case .cancelled:
+            return .cancelled
+        case .failed(let status):
+            return .failure("授权失败（\(status)）")
         }
 
         // AuthorizationExecuteWithPrivileges is deprecated and unavailable in Swift,
@@ -147,7 +166,7 @@ enum IPv6Applier {
         ) -> OSStatus
 
         guard let sym = dlsym(dlopen(nil, RTLD_LAZY), "AuthorizationExecuteWithPrivileges") else {
-            return "系统符号加载失败"
+            return .failure("系统符号加载失败")
         }
         let execFn = unsafeBitCast(sym, to: ExecFn.self)
 
@@ -158,6 +177,8 @@ enum IPv6Applier {
         let execStatus = tool.withCString { cTool in
             execFn(auth, cTool, AuthorizationFlags(), &cArgs, nil)
         }
-        return execStatus == errAuthorizationSuccess ? nil : "命令执行失败（\(execStatus)）"
+        return execStatus == errAuthorizationSuccess
+            ? .success
+            : .failure("命令执行失败（\(execStatus)）")
     }
 }

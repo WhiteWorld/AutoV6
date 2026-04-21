@@ -19,9 +19,11 @@ final class LocationManager: NSObject {
         manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         manager.distanceFilter = kCLDistanceFilterNone
         authorizationStatus = manager.authorizationStatus
-        // If permission was already granted at launch, begin updates so
-        // that macOS's TCC continues to see an active consumer. Without
-        // an active consumer the system can silently revoke the grant.
+        // Only run updates once we're actually authorised. Starting
+        // updates while the status is .notDetermined/.denied has been
+        // observed to crash inside CoreLocation on macOS 26 when the
+        // grant flips to authorizedAlways while an error is in flight
+        // (EXC_BAD_ACCESS in objc_retain on the CoreLocation read queue).
         if isAuthorized {
             manager.startUpdatingLocation()
         }
@@ -95,10 +97,10 @@ extension LocationManager: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+        // Failures are expected while the user hasn't granted permission
+        // yet — we intentionally keep the manager running so TCC sees a
+        // live consumer. Do not auto-open System Settings here.
         print("[LocationManager] Location request failed: \(error), status: \(statusDescription(manager.authorizationStatus))")
-        if manager.authorizationStatus == .denied || manager.authorizationStatus == .restricted {
-            openSystemSettings()
-        }
     }
 }
 
