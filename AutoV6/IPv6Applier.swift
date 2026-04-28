@@ -137,7 +137,11 @@ enum IPv6Applier {
     }
 
     /// Brings AutoV6 to the foreground so SecurityAgent's prompt is visible.
+    /// Only activates when the app isn't already frontmost — otherwise the
+    /// activation can unexpectedly pull the MenuBarExtra window open.
     private static func activateAppForPrompt() {
+        let hadKeyWindow = NSApp.keyWindow != nil
+        guard !hadKeyWindow else { return }
         let activate = { NSApp.activate(ignoringOtherApps: true) }
         if Thread.isMainThread { activate() } else { DispatchQueue.main.sync(execute: activate) }
     }

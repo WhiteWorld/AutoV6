@@ -9,6 +9,8 @@ final class LocationManager: NSObject {
     private(set) var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
     private let manager = CLLocationManager()
+    private var isUpdating = false
+    private var lastPermissionRequestTime: Date = .distantPast
 
     override init() {
         super.init()
@@ -26,7 +28,25 @@ final class LocationManager: NSObject {
         // (EXC_BAD_ACCESS in objc_retain on the CoreLocation read queue).
         if isAuthorized {
             manager.startUpdatingLocation()
+            isUpdating = true
         }
+        // If the system permission dialog is dismissed without a choice
+        // (unusual but possible), the delegate callback never fires and
+        // the KeyableWindow leaks. When the app next becomes active, if
+        // the status hasn't changed the dialog was skipped — clean up.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAppDidBecomeActive),
+            name: NSApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+
+    @objc private func handleAppDidBecomeActive(_ note: Notification) {
+        guard permissionPanel != nil,
+              manager.authorizationStatus == .notDetermined else { return }
+        permissionPanel?.close()
+        permissionPanel = nil
     }
 
     func requestPermission() {
@@ -35,9 +55,24 @@ final class LocationManager: NSObject {
         case .denied, .restricted:
             openSystemSettings()
         case .authorizedAlways:
-            manager.startUpdatingLocation()
+            if !isUpdating {
+                manager.startUpdatingLocation()
+                isUpdating = true
+            }
         default:
-            guard permissionPanel == nil else { return }
+            // Debounce rapid clicks — calling requestAlwaysAuthorization() while
+            // a previous dialog is still in flight can confuse CoreLocation and
+            // cause multiple system dialogs to stack, or KeyableWindows to pile up.
+            let now = Date()
+            guard now.timeIntervalSince(lastPermissionRequestTime) > 2.0 else {
+                print("[LocationManager] Ignoring rapid re-request at \(now)")
+                return
+            }
+            lastPermissionRequestTime = now
+
+            // Clean up any stale panel leaked from a previous cancelled attempt.
+            permissionPanel?.close()
+            permissionPanel = nil
             showPermissionWindow()
             manager.requestAlwaysAuthorization()
         }
@@ -45,6 +80,7 @@ final class LocationManager: NSObject {
 
     private func showPermissionWindow() {
         guard permissionPanel == nil else { return }
+        let hadKeyWindow = NSApp.keyWindow != nil
         let win = KeyableWindow(
             contentRect: NSRect(x: 0, y: 0, width: 1, height: 1),
             styleMask: [.borderless],
@@ -56,7 +92,13 @@ final class LocationManager: NSObject {
         win.level = .floating
         win.center()
         win.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
+        // Only activate if the app wasn't already frontmost (e.g. the
+        // MenuBarExtra popup wasn't open). Aggressively activating a
+        // background agent app can unexpectedly pull the MenuBarExtra
+        // window open on some macOS versions.
+        if !hadKeyWindow {
+            NSApp.activate(ignoringOtherApps: true)
+        }
         permissionPanel = win
     }
 
@@ -88,9 +130,17 @@ extension LocationManager: CLLocationManagerDelegate {
         permissionPanel = nil
         switch authorizationStatus {
         case .authorizedAlways:
-            manager.startUpdatingLocation()
+            if !isUpdating {
+                manager.startUpdatingLocation()
+                isUpdating = true
+            }
         case .denied, .restricted:
-            manager.stopUpdatingLocation()
+            isUpdating = false
+            // CoreLocation already stops internally when the grant is
+            // revoked. Calling stopUpdatingLocation() from this delegate
+            // while an error is in flight triggers an EXC_BAD_ACCESS on
+            // macOS 26 (over-release inside the location read queue).
+            break
         default:
             break
         }
