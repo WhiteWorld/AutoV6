@@ -21,6 +21,16 @@
 		AA060020000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA040020000000000000001 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		AA0A00010000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA000001000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA020001000000000000001;
+			remoteInfo = AutoV6;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		AA030001000000000000001 /* AutoV6.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoV6.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA030003000000000000001 /* AutoV6Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoV6Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +156,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				AA0B00010000000000000001 /* PBXTargetDependency */,
 			);
 			name = AutoV6Tests;
 			productName = AutoV6Tests;
@@ -229,6 +240,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA0B00010000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA020001000000000000001 /* AutoV6 */;
+			targetProxy = AA0A00010000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AA080001000000000000001 /* Debug */ = {
@@ -362,7 +381,7 @@
 				CODE_SIGN_ENTITLEMENTS = Resources/App.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 59C67Y8RM3;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -371,7 +390,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.autov6.AutoV6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -386,7 +405,7 @@
 				CODE_SIGN_ENTITLEMENTS = Resources/App.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 59C67Y8RM3;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -395,7 +414,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.autov6.AutoV6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

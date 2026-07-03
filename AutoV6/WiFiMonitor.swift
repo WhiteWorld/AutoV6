@@ -66,7 +66,15 @@ final class WiFiMonitor: NSObject {
             return
         }
 
-        print("[WiFiMonitor] Matched rule → \(mode.displayName) on \(ifName)")
+        let currentMode = Self.readSystemIPv6Mode(interfaceName: ifName)
+        currentIPv6Mode = currentMode
+        guard Self.needsApply(targetMode: mode, currentMode: currentMode) else {
+            print("[WiFiMonitor] Matched rule already active → \(mode.displayName) on \(ifName)")
+            lastError = nil
+            return
+        }
+
+        print("[WiFiMonitor] Matched rule -> \(mode.displayName) on \(ifName)")
         onModeChange?(mode, ifName)
     }
 
@@ -75,6 +83,15 @@ final class WiFiMonitor: NSObject {
         guard let ssid = currentSSID, !ssid.isEmpty,
               let mode = ruleStore.match(ssid: ssid),
               let ifName = wifiClient.interface()?.interfaceName else { return }
+
+        let currentMode = Self.readSystemIPv6Mode(interfaceName: ifName)
+        currentIPv6Mode = currentMode
+        guard Self.needsApply(targetMode: mode, currentMode: currentMode) else {
+            print("[WiFiMonitor] Current rule already active -> \(mode.displayName) on \(ifName)")
+            lastError = nil
+            return
+        }
+
         print("[WiFiMonitor] Applying rule immediately → \(mode.displayName) on \(ifName)")
         onModeChange?(mode, ifName)
     }
@@ -90,6 +107,10 @@ final class WiFiMonitor: NSObject {
     /// Called after a mode has been applied so the displayed state stays in sync.
     func notifyModeApplied(_ mode: IPv6Mode) {
         currentIPv6Mode = mode
+    }
+
+    static func needsApply(targetMode: IPv6Mode, currentMode: IPv6Mode?) -> Bool {
+        currentMode != targetMode
     }
 
     // MARK: - System IPv6 Query

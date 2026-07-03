@@ -70,4 +70,17 @@ struct RuleStoreTests {
         #expect(store.rules.count == 1)
         #expect(store.rules.first?.ssid == "B")
     }
+
+    @Test("Matching current IPv6 mode does not need apply")
+    func matchingCurrentModeDoesNotNeedApply() {
+        #expect(WiFiMonitor.needsApply(targetMode: .automatic, currentMode: .automatic) == false)
+        #expect(WiFiMonitor.needsApply(targetMode: .manual, currentMode: .manual) == false)
+        #expect(WiFiMonitor.needsApply(targetMode: .linkLocal, currentMode: .linkLocal) == false)
+    }
+
+    @Test("Different or unknown current IPv6 mode needs apply")
+    func differentOrUnknownCurrentModeNeedsApply() {
+        #expect(WiFiMonitor.needsApply(targetMode: .automatic, currentMode: .manual))
+        #expect(WiFiMonitor.needsApply(targetMode: .automatic, currentMode: nil))
+    }
 }
